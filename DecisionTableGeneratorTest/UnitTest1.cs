@@ -8,7 +8,6 @@ namespace DecisionMatrixTest
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

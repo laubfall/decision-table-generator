@@ -17,7 +17,11 @@
     },
     "frameworks": {
       "netcoreapp2.2": {
-        "projectReferences": {}
+        "projectReferences": {
+          "/Users/Daniel/Documents/workspace-dotnet/DecisionMatrix/DecisionTableGenerator/DecisionMatrix.csproj": {
+            "projectPath": "/Users/Daniel/Documents/workspace-dotnet/DecisionMatrix/DecisionTableGenerator/DecisionMatrix.csproj"
+          }
+        }
       }
     },
     "warningProperties": {
