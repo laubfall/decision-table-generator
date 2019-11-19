@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace DecisionMatrix
@@ -12,9 +13,15 @@ namespace DecisionMatrix
 
         private List<Decision> _decisions = new List<Decision>();
 
+        private List<string> _addDecisionActions = new List<string>();
+
         private static string ACTION_ADD = "add";
 
         private static string ACTION_LINK = "link";
+
+        private static string ACTION_SAVE = "save";
+
+        private static string ACTION_LOAD = "load";
 
         static void Main(string[] args)
         {
@@ -22,7 +29,10 @@ namespace DecisionMatrix
             Console.WriteLine(@"Add a decision with the following syntax: add decisionName:choice*[/]");
             Console.WriteLine("Link a decision to a choice: link idPathToChoiceDelSlash:decisionId ");
             Console.WriteLine("List all decisions with: list");
+            Console.WriteLine("Write decisions to disk: save pathToFilesystem");
+            Console.WriteLine("Load decisions from disk: load pathToFilesystem");
             Console.WriteLine("Remove all decisions: remove");
+            Console.WriteLine("Remove decision: remove decisionId");
             Console.WriteLine("Exit application: exit");
             var prog = new Program();
 
@@ -36,6 +46,7 @@ namespace DecisionMatrix
         {
             if (rawInput.StartsWith(ACTION_ADD))
             {
+                _addDecisionActions.Add(rawInput);
                 var indexOf = rawInput.IndexOf(ACTION_ADD);
                 AddDecision(rawInput.Substring(indexOf + ACTION_ADD.Length));
             }
@@ -54,7 +65,52 @@ namespace DecisionMatrix
             }
             else if (rawInput.StartsWith("remove"))
             {
+                var keyWordAndPossibleId = rawInput.Split(" ");
+                if (keyWordAndPossibleId.Length > 1)
+                {
+                    int.TryParse(keyWordAndPossibleId[1], out var decId);
+                    RemoveDecision(decId);
+                }
+
                 RemoveAllDecisions();
+            }
+            else if (rawInput.StartsWith(ACTION_SAVE))
+            {
+                Save(rawInput);
+            }
+            else if (rawInput.StartsWith(ACTION_LOAD))
+            {
+                Load(rawInput);
+            }
+            else
+            {
+                Console.WriteLine("Unknown command: " + rawInput);
+            }
+        }
+
+        private void Save(string rawInput)
+        {
+            var path = rawInput.Remove(rawInput.IndexOf(ACTION_SAVE), ACTION_SAVE.Length).Trim();
+            var aggregate = _addDecisionActions.Aggregate((s1, s2) => s1 + "\n" + s2);
+            try
+            {
+                File.WriteAllText(path, aggregate);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("failed to write actions to disk " + e);
+            }
+        }
+
+        private void Load(string rawInput)
+        {
+            var path = rawInput.Remove(rawInput.IndexOf(ACTION_LOAD), ACTION_LOAD.Length).Trim();
+            var readLines = File.ReadLines(path);
+
+            _decisions.Clear();
+            foreach (var rl in readLines)
+            {
+                Dispatch(rl);
             }
         }
 
@@ -87,6 +143,20 @@ namespace DecisionMatrix
         private void RemoveAllDecisions()
         {
             _decisions.Clear();
+            Console.WriteLine("Removed all decisions");
+        }
+
+        private void RemoveDecision(int id)
+        {
+            var decision = _decisions.Find(dec => dec._decisionId == id);
+            if (decision == null)
+            {
+                Console.WriteLine("Did not found decision with id " + id);
+                return;
+            }
+
+            _decisions.Remove(decision);
+            Console.WriteLine($"Removed decision {decision._description}");
         }
 
         private void Link(string rawInput)
@@ -147,7 +217,7 @@ namespace DecisionMatrix
 
             for (int d = 0; d < tab.Count; d++)
             {
-                var res = "|";
+                var res = $"{_decisions[d]._description}({_decisions[d]._decisionId})|";
                 foreach (var choice in tab[d])
                 {
                     res += choice._choice;
@@ -176,7 +246,7 @@ namespace DecisionMatrix
             {
                 // add the original element
                 res.Add(dt);
-                
+
                 // and now the wanted count of copies
                 for (int i = 0; i < count; i++)
                 {
