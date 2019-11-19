@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="184a063a-563f-4cd7-8b10-da11e52f7aee" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.DecisionMatrix.dir/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DecisionMatrix.dir/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DecisionMatrix.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DecisionMatrix.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
     </list>
@@ -114,7 +112,7 @@
       <option name="presentableId" value="Default" />
       <updated>1574068861128</updated>
       <workItem from="1574068862270" duration="11628000" />
-      <workItem from="1574148892067" duration="7178000" />
+      <workItem from="1574148892067" duration="10747000" />
     </task>
     <servers />
   </component>
@@ -144,19 +142,6 @@
           <properties exception="System.Threading.ThreadAbortException" displayValue="System.Threading.ThreadAbortException" />
           <option name="timeStamp" value="1" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Program.cs</url>
-          <line>100</line>
-          <properties documentPath="$PROJECT_DIR$/Program.cs" initialLine="100">
-            <startOffsets>
-              <option value="3347" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3411" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

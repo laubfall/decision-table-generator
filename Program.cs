@@ -23,12 +23,15 @@ namespace DecisionMatrix
 
         private static string ACTION_LOAD = "load";
 
+        private static string ACTION_CREATE = "create";
+
         static void Main(string[] args)
         {
             Console.WriteLine("Decision Matrix");
             Console.WriteLine(@"Add a decision with the following syntax: add decisionName:choice*[/]");
             Console.WriteLine("Link a decision to a choice: link idPathToChoiceDelSlash:decisionId ");
             Console.WriteLine("List all decisions with: list");
+            Console.WriteLine("Create the whole decision table with: create [decisionDescription=true/false] [decisionId=true/false] ");
             Console.WriteLine("Write decisions to disk: save pathToFilesystem");
             Console.WriteLine("Load decisions from disk: load pathToFilesystem");
             Console.WriteLine("Remove all decisions: remove");
@@ -59,9 +62,9 @@ namespace DecisionMatrix
             {
                 List();
             }
-            else if (rawInput.StartsWith("create"))
+            else if (rawInput.StartsWith(ACTION_CREATE))
             {
-                CreateDecisionTable();
+                CreateDecisionTable(rawInput);
             }
             else if (rawInput.StartsWith("remove"))
             {
@@ -70,6 +73,7 @@ namespace DecisionMatrix
                 {
                     int.TryParse(keyWordAndPossibleId[1], out var decId);
                     RemoveDecision(decId);
+                    return;
                 }
 
                 RemoveAllDecisions();
@@ -118,16 +122,7 @@ namespace DecisionMatrix
         {
             var d2c = rawInput.Split(":");
             var rawChoices = d2c[1].Split("/");
-            var choices = new List<Choice>();
-
-            foreach (var choice in rawChoices)
-            {
-                choices.Add(new Choice()
-                {
-                    _choice = choice,
-                    _id = _choiceSeq++
-                });
-            }
+            var choices = rawChoices.Select(choice => new Choice() {_choice = choice, _id = _choiceSeq++}).ToList();
 
             var dec = new Decision()
             {
@@ -186,11 +181,10 @@ namespace DecisionMatrix
             }
         }
 
-        private void CreateDecisionTable()
+        private void CreateDecisionTable(string rawInput)
         {
-            Dictionary<int, List<Choice>> tab = new Dictionary<int, List<Choice>>();
-
-            int i = 0;
+            var tab = new Dictionary<int, List<Choice>>();
+            var i = 0;
             foreach (var dec in _decisions)
             {
                 var l = new List<Choice>(dec._Choices);
@@ -215,6 +209,8 @@ namespace DecisionMatrix
                 i++;
             }
 
+
+            //var options = rawInput.Substring(rawInput.IndexOf(ACTION_CREATE), ACTION_CREATE.Length);
             for (int d = 0; d < tab.Count; d++)
             {
                 var res = $"{_decisions[d]._description}({_decisions[d]._decisionId})|";
@@ -276,7 +272,7 @@ namespace DecisionMatrix
                 cStr += "\n";
             }
 
-            return $"{_decisionId} : {_description}, choices: {cStr}";
+            return $"{_decisionId} : {_description}, \n\t choices: {cStr}";
         }
     }
 
